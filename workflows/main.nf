@@ -6,6 +6,7 @@ include { STRINGTIE_FIRST } from './modules/transcript_assembly/stringtie_first.
 include { STRINGTIE_MERGE } from './modules/transcript_assembly/stringtie_merge.nf'
 include { STRINGTIE_SECOND } from './modules/transcript_assembly/stringtie_second.nf'
 include { PREPDE } from './modules/transcript_assembly/prepde.nf'
+include { MULTIQC } from './modules/qc/multiqc.nf'
 
 workflow {
     samples_ch = Channel.fromPath(params.yaml)
@@ -25,4 +26,14 @@ workflow {
     quantified = aligned.combine(merged_gtf) | STRINGTIE_SECOND
 
     prepde = quantified.collect() | PREPDE
+
+    # Collect QC files
+    qc_files = Channel.from([
+        "results/trimmed/",
+        "results/fastqc/",
+        "results/hisat2/",
+        "results/stringtie/"
+    ])
+
+    multiqc = qc_files | MULTIQC
 }
