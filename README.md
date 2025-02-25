@@ -10,25 +10,17 @@
 7. Present QC for raw read, alignment, gene biotype, sample similarity, and strand-specificity checks ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Pipeline structure
-~
-│── conf/
-│── modules/
-│   ├── preprocess/
-│   │   ├── concat_fastq.nf
-│   │   ├── trim_galore.nf
-│   ├── align/
-│   │   ├── hisat2_index.nf
-│   │   ├── hisat2_align.nf
-│   ├── transcript_assembly/
-│   │   ├── stringtie_first.nf   # First StringTie run
-│   │   ├── stringtie_merge.nf   # Merge transcript assemblies
-│   │   ├── stringtie_second.nf  # Second StringTie run (quantification)
-│   │   ├── prepde.nf            # PrepDE.py for count matrix
-│── workflows/
-│   ├── main.nf
-│── bin/                        # Any helper scripts
-│── params.yaml                  # YAML-based input configuration
-│── nextflow.config              # Pipeline-wide configuration
+Each directory and file is structured to facilitate the processing pipeline.
+
+- `conf/`: Configuration files related to the project.
+- `modules/`: Contains sub-modules, each serving specific roles like preprocessing, alignment, and transcript assembly.
+  - `preprocess/`: Preprocessing scripts, such as concatenating and trimming fastqs.
+  - `align/`: Contains scripts for indexing and alignment using HISAT2.
+  - `transcript_assembly/`: Scripts for transcript assembly and quantification using StringTie.
+- `workflows/`: Main pipeline scripts.
+- `bin/`: Directory for helper scripts.
+- `params.yaml`: Configuration file specifying input parameters.
+- `nextflow.config`: Pipeline-wide configuration settings.
 
 ## Pipeline usage
 ```sh
