@@ -1,0 +1,13 @@
+# Nextflow work directory (large temp files)
+results/
+work/
+*.nextflow*
+.nextflow/
+
+# Logs and reports
+
+pipeline_report.html
+timeline.html
+trace.txt
+.nexflow.log
+

@@ -1,0 +1,11 @@
+samples:
+  sample1:
+    R1: "data/sample1_L001_R1.fastq.gz, data/sample1_L002_R1.fastq.gz"
+    R2: "data/sample1_L001_R2.fastq.gz, data/sample1_L002_R2.fastq.gz"
+  sample2:
+    R1: "data/sample2_L001_R1.fastq.gz"
+    R2: "data/sample2_L001_R2.fastq.gz"
+
+hisat2_index: "path/to/index"  # Leave empty to generate one
+genome_fasta: "path/to/genome.fa"  # Required if generating HISAT2 index
+gtf_annotation: "path/to/annotation.gtf"  # GTF file for StringTie
