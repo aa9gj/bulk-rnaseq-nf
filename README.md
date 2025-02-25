@@ -1,8 +1,8 @@
 ## Intro
-**hills_bulk_RNAseq** is a bioinformatics pipeline that can be used to analyse RNA sequencing data obtained from canines and felines. It takes a samplesheet and FASTQ files as input, performs quality control (QC), trimming, alignment, and assembly. The tool produces a gene expression matrix ready for input to DESeq2 in R for differential expression analysis
+**bulk-rnaseq-nf** is a bioinformatics pipeline that can be used to analyse RNA sequencing data. It takes a samplesheet and FASTQ files as input, performs lane concatenation, quality control (QC), trimming, alignment, assembly, quantification, and prepares data for input into packages (e.g. DESeq2) for differential expression analysis.
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Adapter and quality trimming ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+1. Lane concatenation for samples sequences on multiple lanes
+2. Adapter trimming, and read QC ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
 3. [`HiSAT2`](https://ccb.jhu.edu/software/hisat2/index.shtml) -> **NO QUANTIFICATION**
 4. Sort and index alignments ([`SAMtools`](https://sourceforge.net/projects/samtools/files/samtools/))
 5. Transcript assembly and quantification ([`StringTie`](https://ccb.jhu.edu/software/stringtie/))
@@ -28,3 +28,7 @@
 │── bin/                        # Any helper scripts
 │── params.yaml                  # YAML-based input configuration
 │── nextflow.config              # Pipeline-wide configuration
+
+## Pipeline usage
+```sh
+nextflow run workflows/main.nf -params-files params.yaml
