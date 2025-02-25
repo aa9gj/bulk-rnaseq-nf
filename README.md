@@ -17,6 +17,7 @@ Each directory and file is structured to facilitate the processing pipeline.
   - `preprocess/`: Preprocessing scripts, such as concatenating and trimming fastqs.
   - `align/`: Contains scripts for indexing and alignment using HISAT2.
   - `transcript_assembly/`: Scripts for transcript assembly and quantification using StringTie.
+  - `qc`: Quality control 
 - `workflows/`: Main pipeline scripts.
 - `bin/`: Directory for helper scripts.
 - `params.yaml`: Configuration file specifying input parameters.
