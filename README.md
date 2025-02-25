@@ -1,12 +1,13 @@
-## Intro
+## Introduction
 **bulk-rnaseq-nf** is a bioinformatics pipeline that can be used to analyse RNA sequencing data. It takes a samplesheet and FASTQ files as input, performs lane concatenation, quality control (QC), trimming, alignment, assembly, quantification, and prepares data for input into packages (e.g. DESeq2) for differential expression analysis.
 
 1. Lane concatenation for samples sequences on multiple lanes
 2. Adapter trimming, and read QC ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
-3. [`HiSAT2`](https://ccb.jhu.edu/software/hisat2/index.shtml) -> **NO QUANTIFICATION**
-4. Sort and index alignments ([`SAMtools`](https://sourceforge.net/projects/samtools/files/samtools/))
-5. Transcript assembly and quantification ([`StringTie`](https://ccb.jhu.edu/software/stringtie/))
-6. Present QC for raw read, alignment, gene biotype, sample similarity, and strand-specificity checks ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+3. [`HiSAT2`](https://ccb.jhu.edu/software/hisat2/index.shtml) index generation if not readily available 
+4. [`HiSAT2`](https://ccb.jhu.edu/software/hisat2/index.shtml) alignment 
+5. Sort and index alignments ([`SAMtools`](https://sourceforge.net/projects/samtools/files/samtools/))
+6. Transcript assembly and quantification ([`StringTie`](https://ccb.jhu.edu/software/stringtie/))
+7. Present QC for raw read, alignment, gene biotype, sample similarity, and strand-specificity checks ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 
 ## Pipeline structure
 ~
