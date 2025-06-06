@@ -25,4 +25,5 @@ Each directory and file is structured to facilitate the processing pipeline.
 
 ## Pipeline usage
 ```sh
-nextflow run workflows/main.nf -params-files params.yaml
+nextflow run workflows/main.nf -params-file params.yaml
+```
