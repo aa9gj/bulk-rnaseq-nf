@@ -1,12 +1,50 @@
+/*
+ * PREPDE
+ *
+ * Generate count matrices from StringTie output using prepDE.py.
+ * Creates gene-level and transcript-level count matrices suitable
+ * for differential expression analysis with DESeq2, edgeR, or limma.
+ *
+ * Input:
+ *   - gtf_files: Collection of quantified GTF files from STRINGTIE_SECOND
+ *
+ * Output:
+ *   - gene_counts: Gene-level count matrix (CSV)
+ *   - transcript_counts: Transcript-level count matrix (CSV)
+ *
+ * Note: prepDE.py is provided by the StringTie authors and expects
+ *       a specific directory structure or sample list file.
+ *
+ * Tools: prepDE.py (bundled with StringTie)
+ */
+
 process PREPDE {
+    tag "count_matrix"
+    label 'process_low'
+
+    publishDir "${params.outdir}/counts", mode: 'copy'
+
     input:
     path(gtf_files)
 
     output:
-    path("gene_count_matrix.csv"), path("transcript_count_matrix.csv")
+    path("gene_count_matrix.csv"), emit: gene_counts
+    path("transcript_count_matrix.csv"), emit: transcript_counts
+    path("sample_list.txt"), emit: sample_list
 
     script:
     """
-    python3 PrepDE.py -i ${gtf_files}
+    # Create sample list file for prepDE.py
+    # Format: sample_name<tab>path_to_gtf
+    for gtf in *.gtf; do
+        sample=\$(basename \${gtf} _quant.gtf)
+        echo -e "\${sample}\\t\${gtf}"
+    done > sample_list.txt
+
+    # Generate count matrices
+    prepDE.py \\
+        -i sample_list.txt \\
+        -g gene_count_matrix.csv \\
+        -t transcript_count_matrix.csv
     """
 }

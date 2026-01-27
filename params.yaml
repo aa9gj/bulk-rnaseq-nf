@@ -1,11 +1,61 @@
+# =============================================================================
+# bulk-rnaseq-nf Pipeline Parameters
+# =============================================================================
+# This file contains all parameters needed to run the bulk RNA-seq pipeline.
+# Modify the values below according to your experimental setup.
+#
+# Usage: nextflow run workflows/main.nf -params-file params.yaml
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# SAMPLE DEFINITIONS
+# -----------------------------------------------------------------------------
+# Define your samples here. Each sample should have R1 and R2 paths.
+# For samples sequenced on multiple lanes, provide comma-separated paths.
+#
+# Format:
+#   sample_name:
+#     R1: "path/to/R1.fastq.gz" or "lane1_R1.fq.gz,lane2_R1.fq.gz"
+#     R2: "path/to/R2.fastq.gz" or "lane1_R2.fq.gz,lane2_R2.fq.gz"
+
 samples:
   sample1:
-    R1: "data/sample1_L001_R1.fastq.gz, data/sample1_L002_R1.fastq.gz"
-    R2: "data/sample1_L001_R2.fastq.gz, data/sample1_L002_R2.fastq.gz"
+    R1: "data/sample1_L001_R1.fastq.gz,data/sample1_L002_R1.fastq.gz"
+    R2: "data/sample1_L001_R2.fastq.gz,data/sample1_L002_R2.fastq.gz"
   sample2:
     R1: "data/sample2_L001_R1.fastq.gz"
     R2: "data/sample2_L001_R2.fastq.gz"
 
-hisat2_index: "path/to/index"  # Leave empty to generate one
-genome_fasta: "path/to/genome.fa"  # Required if generating HISAT2 index
-gtf_annotation: "path/to/annotation.gtf"  # GTF file for StringTie
+# -----------------------------------------------------------------------------
+# REFERENCE FILES
+# -----------------------------------------------------------------------------
+# HISAT2 index: Provide either a pre-built index path OR a genome FASTA to
+# build the index. Pre-built indices are available from:
+# https://daehwankimlab.github.io/hisat2/download/
+
+# Option 1: Use existing HISAT2 index (recommended for production)
+# hisat2_index: "/path/to/hisat2/index/basename"
+
+# Option 2: Build index from genome FASTA (set hisat2_index to null or remove it)
+hisat2_index: null
+genome_fasta: "reference/genome.fa"
+
+# GTF annotation file (required)
+# Download from Ensembl, GENCODE, or UCSC
+gtf_annotation: "reference/annotation.gtf"
+
+# -----------------------------------------------------------------------------
+# OUTPUT SETTINGS
+# -----------------------------------------------------------------------------
+# Output directory for all results
+outdir: "results"
+
+# -----------------------------------------------------------------------------
+# RESOURCE SETTINGS (optional - defaults in nextflow.config)
+# -----------------------------------------------------------------------------
+# Uncomment and modify these to override default resource limits
+
+# threads: 8           # Default threads for processes
+# max_cpus: 16         # Maximum CPUs to use
+# max_memory: "64.GB"  # Maximum memory to use
+# max_time: "48.h"     # Maximum time for any process

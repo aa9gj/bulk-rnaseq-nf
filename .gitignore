@@ -1,13 +1,48 @@
 # Nextflow work directory (large temp files)
-results/
 work/
-*.nextflow*
+results/
+
+# Nextflow cache and logs
 .nextflow/
+.nextflow.log*
+*.nextflow*
 
-# Logs and reports
-
+# Pipeline reports
 pipeline_report.html
 timeline.html
 trace.txt
-.nexflow.log
+dag.svg
 
+# Data files (too large for git)
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.bam.bai
+*.sam
+*.gtf
+*.gff
+*.fa
+*.fasta
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Conda/Mamba
+.conda/
