@@ -13,7 +13,8 @@
  *   7. Merge transcript assemblies (StringTie merge)
  *   8. Quantification (StringTie - second pass)
  *   9. Prepare count matrices (prepDE.py)
- *  10. MultiQC report generation
+ *  10. featureCounts / HTSeq quantification (optional)
+ *  11. MultiQC report generation
  */
 
 nextflow.enable.dsl = 2
@@ -35,6 +36,9 @@ include { STRINGTIE_FIRST } from '../modules/transcript_assembly/stringtie_first
 include { STRINGTIE_MERGE } from '../modules/transcript_assembly/stringtie_merge.nf'
 include { STRINGTIE_SECOND } from '../modules/transcript_assembly/stringtie_second.nf'
 include { PREPDE } from '../modules/transcript_assembly/prepde.nf'
+include { FEATURECOUNTS } from '../modules/quantification/featurecounts.nf'
+include { HTSEQ_COUNT } from '../modules/quantification/htseq.nf'
+include { HTSEQ_MERGE } from '../modules/quantification/htseq.nf'
 include { MULTIQC } from '../modules/qc/multiqc.nf'
 
 /*
@@ -171,7 +175,36 @@ workflow {
     )
 
     /*
-     * STEP 12: Generate MultiQC report
+     * STEP 12: featureCounts quantification (optional)
+     * Fast read counting using Subread featureCounts
+     */
+    if (params.run_featurecounts) {
+        // Collect all sorted BAM files
+        bam_files_ch = SAMTOOLS_SORT.out.sorted_bam
+            .map { sample_id, bam, bai -> bam }
+            .collect()
+
+        FEATURECOUNTS(bam_files_ch, file(params.gtf_annotation))
+    }
+
+    /*
+     * STEP 13: HTSeq quantification (optional)
+     * Read counting using HTSeq-count
+     */
+    if (params.run_htseq) {
+        // Run HTSeq per sample
+        HTSEQ_COUNT(
+            SAMTOOLS_SORT.out.sorted_bam.combine(gtf_annotation_ch)
+        )
+
+        // Merge individual count files into a matrix
+        HTSEQ_MERGE(
+            HTSEQ_COUNT.out.counts.collect()
+        )
+    }
+
+    /*
+     * STEP 14: Generate MultiQC report
      * Collect QC outputs from Trim Galore, HISAT2, SAMtools, StringTie, and RSeQC
      */
     qc_files_ch = TRIM_GALORE.out.qc_reports
@@ -190,6 +223,11 @@ workflow {
             .mix(RSEQC_GENE_BODY_COVERAGE.out.coverage)
             .mix(RSEQC_TIN.out.tin_scores)
             .mix(RSEQC_TIN.out.summary)
+    }
+
+    // Add featureCounts summary to MultiQC if run
+    if (params.run_featurecounts) {
+        qc_files_ch = qc_files_ch.mix(FEATURECOUNTS.out.summary)
     }
 
     MULTIQC(qc_files_ch.collect())
