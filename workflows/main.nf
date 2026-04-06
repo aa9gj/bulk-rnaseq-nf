@@ -68,13 +68,13 @@ workflow {
      * STEP 2: Concatenate multi-lane FASTQ files
      * For samples sequenced across multiple lanes
      */
-    CONCAT_FASTQ(samples_ch)
+   //  CONCAT_FASTQ(samples_ch)
 
     /*
      * STEP 3: Quality control and adapter trimming
      * Uses Trim Galore (wrapper for Cutadapt + FastQC)
      */
-    TRIM_GALORE(CONCAT_FASTQ.out.reads)
+    TRIM_GALORE(samples_ch)
 
     /*
      * STEP 4: Prepare HISAT2 index

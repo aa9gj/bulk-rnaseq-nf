@@ -37,7 +37,8 @@ process STRINGTIE_FIRST {
     """
     # Run StringTie first-pass assembly
     stringtie \\
-        ${bam} \\
+        -e \\
+	${bam} \\
         -G ${gtf_annotation} \\
         -o ${sample_id}.gtf \\
         -p ${threads} \\

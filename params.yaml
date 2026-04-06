@@ -1,61 +1,90 @@
 # =============================================================================
 # bulk-rnaseq-nf Pipeline Parameters
 # =============================================================================
-# This file contains all parameters needed to run the bulk RNA-seq pipeline.
-# Modify the values below according to your experimental setup.
-#
-# Usage: nextflow run workflows/main.nf -params-file params.yaml
-# =============================================================================
 
 # -----------------------------------------------------------------------------
 # SAMPLE DEFINITIONS
 # -----------------------------------------------------------------------------
-# Define your samples here. Each sample should have R1 and R2 paths.
-# For samples sequenced on multiple lanes, provide comma-separated paths.
-#
-# Format:
-#   sample_name:
-#     R1: "path/to/R1.fastq.gz" or "lane1_R1.fq.gz,lane2_R1.fq.gz"
-#     R2: "path/to/R2.fastq.gz" or "lane1_R2.fq.gz,lane2_R2.fq.gz"
-
 samples:
   sample1:
-    R1: "data/sample1_L001_R1.fastq.gz,data/sample1_L002_R1.fastq.gz"
-    R2: "data/sample1_L001_R2.fastq.gz,data/sample1_L002_R2.fastq.gz"
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/1_B-50287528-002P_HPET106_S17_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/1_B-50287528-002P_HPET106_S17_L002_R2_001.fastq.gz"
   sample2:
-    R1: "data/sample2_L001_R1.fastq.gz"
-    R2: "data/sample2_L001_R2.fastq.gz"
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/2_B-50287480-002P_HPET106_S18_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/2_B-50287480-002P_HPET106_S18_L002_R2_001.fastq.gz"
+  sample3:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/3_B-50287468-002P_HPET106_S19_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/3_B-50287468-002P_HPET106_S19_L002_R2_001.fastq.gz"
+  sample4:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/4_B-50287456-002P_HPET106_S20_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/4_B-50287456-002P_HPET106_S20_L002_R2_001.fastq.gz"
+  sample5:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/5_B-50287450-002P_HPET106_S21_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/5_B-50287450-002P_HPET106_S21_L002_R2_001.fastq.gz"
+  sample6:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/6_B-50287444-002P_HPET106_S22_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/6_B-50287444-002P_HPET106_S22_L002_R2_001.fastq.gz"
+  sample7:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/7_B-50287438-002P_HPET106_S23_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/7_B-50287438-002P_HPET106_S23_L002_R2_001.fastq.gz"
+  sample8:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/8_B-50287432-002P_HPET106_S24_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/8_B-50287432-002P_HPET106_S24_L002_R2_001.fastq.gz"
+  sample9:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/9_B-50287420-002P_HPET106_S25_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/9_B-50287420-002P_HPET106_S25_L002_R2_001.fastq.gz"
+  sample10:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/10_B-50287414-002P_HPET106_S26_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/10_B-50287414-002P_HPET106_S26_L002_R2_001.fastq.gz"
+  sample11:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/11_B-50287522-002P_HPET106_S27_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/11_B-50287522-002P_HPET106_S27_L002_R2_001.fastq.gz"
+  sample12:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/12_B-50287516-002P_HPET106_S28_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/12_B-50287516-002P_HPET106_S28_L002_R2_001.fastq.gz"
+  sample13:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/13_B-50287510-002P_HPET106_S29_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/13_B-50287510-002P_HPET106_S29_L002_R2_001.fastq.gz"
+  sample14:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/14_B-50287504-002P_HPET106_S30_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/14_B-50287504-002P_HPET106_S30_L002_R2_001.fastq.gz"
+  sample15:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/15_B-50287498-002P_HPET106_S31_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/15_B-50287498-002P_HPET106_S31_L002_R2_001.fastq.gz"
+  sample16:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/16_B-50287492-002P_HPET106_S32_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/16_B-50287492-002P_HPET106_S32_L002_R2_001.fastq.gz"
+  sample17:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/17_B-50287486-002P_HPET106_S33_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/17_B-50287486-002P_HPET106_S33_L002_R2_001.fastq.gz"
+  sample18:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/18_B-50287474-002P_HPET106_S34_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/18_B-50287474-002P_HPET106_S34_L002_R2_001.fastq.gz"
+  sample19:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/19_B-50287462-002P_HPET106_S35_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/19_B-50287462-002P_HPET106_S35_L002_R2_001.fastq.gz"
+  sample20:
+    R1: "/data/Genetics/fel_rnaseq_fas_apr2026/20_B-50287426-002P_HPET106_S36_L002_R1_001.fastq.gz"
+    R2: "/data/Genetics/fel_rnaseq_fas_apr2026/20_B-50287426-002P_HPET106_S36_L002_R2_001.fastq.gz"
 
 # -----------------------------------------------------------------------------
 # REFERENCE FILES
 # -----------------------------------------------------------------------------
-# HISAT2 index: Provide either a pre-built index path OR a genome FASTA to
-# build the index. Pre-built indices are available from:
-# https://daehwankimlab.github.io/hisat2/download/
-
-# Option 1: Use existing HISAT2 index (recommended for production)
-# hisat2_index: "/path/to/hisat2/index/basename"
-
-# Option 2: Build index from genome FASTA (set hisat2_index to null or remove it)
+# We set index to null so HISAT2_INDEX module will build it from the FASTA
 hisat2_index: null
-genome_fasta: "reference/genome.fa"
-
-# GTF annotation file (required)
-# Download from Ensembl, GENCODE, or UCSC
-gtf_annotation: "reference/annotation.gtf"
+genome_fasta: "/home/arbya/wrk/cat_fas_project/bulk_rnaseq_analysis_apr2026/references/Felis_catus.F.catus_Fca126_mat1.0.dna.toplevel.fa"
+gtf_annotation: "/home/arbya/wrk/cat_fas_project/bulk_rnaseq_analysis_apr2026/references/Felis_catus.F.catus_Fca126_mat1.0.115.gtf"
 
 # -----------------------------------------------------------------------------
 # OUTPUT SETTINGS
 # -----------------------------------------------------------------------------
-# Output directory for all results
-outdir: "results"
+# Appended /results to keep your base analysis directory clean
+outdir: "/home/arbya/wrk/cat_fas_project/bulk_rnaseq_analysis_apr2026/ensembl_results"
 
 # -----------------------------------------------------------------------------
-# RESOURCE SETTINGS (optional - defaults in nextflow.config)
+# RESOURCE SETTINGS
 # -----------------------------------------------------------------------------
-# Uncomment and modify these to override default resource limits
-
-# threads: 8           # Default threads for processes
-# max_cpus: 16         # Maximum CPUs to use
-# max_memory: "64.GB"  # Maximum memory to use
-# max_time: "48.h"     # Maximum time for any process
+threads: 8
+max_cpus: 16
+max_memory: "64.GB"
+max_time: "48.h"

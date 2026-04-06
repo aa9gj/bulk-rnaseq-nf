@@ -42,7 +42,7 @@ process PREPDE {
     done > sample_list.txt
 
     # Generate count matrices
-    prepDE.py \\
+    prepDE.py3 \\
         -i sample_list.txt \\
         -g gene_count_matrix.csv \\
         -t transcript_count_matrix.csv
