@@ -40,8 +40,8 @@ process PREPDE {
         echo -e "\${sample}\\t\${gtf}"
     done > sample_list.txt
 
-    # Generate count matrices using StringTie's prepDE.py
-    prepDE.py \\
+    # Generate count matrices
+    prepDE.py3 \\
         -i sample_list.txt \\
         -g gene_count_matrix.csv \\
         -t transcript_count_matrix.csv
