@@ -18,7 +18,9 @@ A Nextflow pipeline for bulk RNA sequencing analysis.
 8. **Merge assemblies** - Create unified transcript annotation across samples
 9. **Quantification** - Estimate abundances with [StringTie](https://ccb.jhu.edu/software/stringtie/) (second pass)
 10. **Count matrices** - Generate gene/transcript counts with prepDE.py
-11. **QC report** - Aggregate QC metrics with [MultiQC](https://multiqc.info/)
+11. **featureCounts** - Fast read counting with [Subread](http://subread.sourceforge.net/) (optional)
+12. **HTSeq** - Read counting with [HTSeq](https://htseq.readthedocs.io/) (optional)
+13. **QC report** - Aggregate QC metrics with [MultiQC](https://multiqc.info/)
 
 ## Requirements
 
@@ -30,7 +32,14 @@ A Nextflow pipeline for bulk RNA sequencing analysis.
 
 ### Software Dependencies
 
-Install via conda (recommended):
+For HPC clusters with module system, the following modules are loaded automatically when using the SLURM profile:
+
+```
+hisat2/2.2.1 samtools/1.21 stringtie/3.0.0 FastQC/0.12.0 TrimGalore/0.6.10 
+rseqc/5.0.4 ucsc-tools/latest subread/2.0.6 htseq/2.0.5
+```
+
+Or install via conda:
 
 ```bash
 conda env create -f environment.yml
@@ -44,14 +53,27 @@ Or ensure the following tools are in your PATH:
 - samtools >= 1.15
 - stringtie >= 2.2.1
 - rseqc >= 5.0.1
-- ucsc-gtftogenepred (for GTF-to-BED conversion)
-- ucsc-genepredtobed (for GTF-to-BED conversion)
+- ucsc-tools (gtfToGenePred, genePredToBed)
+- subread >= 2.0.6 (for featureCounts)
+- htseq >= 2.0.5 (for HTSeq-count)
 - multiqc >= 1.12
 - python >= 3.8
 
 ## Installation
 
-### Option 1: Conda (recommended)
+### Option 1: HPC Cluster with Module System
+
+If your cluster has the required software installed as modules, simply use the SLURM profile:
+
+```bash
+git clone https://github.com/yourusername/bulk-rnaseq-nf.git
+cd bulk-rnaseq-nf
+
+# Run with SLURM profile (modules loaded automatically)
+nextflow run workflows/main.nf -params-file params.yaml -profile slurm
+```
+
+### Option 2: Conda
 
 ```bash
 # Clone the repository
@@ -65,30 +87,6 @@ conda activate bulk-rnaseq
 # Verify installation
 nextflow run workflows/main.nf --help
 ```
-
-### Option 2: Local pip install (when tools aren't on the cluster)
-
-If RSeQC or other Python tools are not installed on your cluster, you can
-install them into your local user directory:
-
-```bash
-# Install RSeQC locally (no admin privileges required)
-pip install --user rseqc
-
-# Or install into a specific directory
-pip install --target=$HOME/local/lib/python rseqc
-
-# Make sure the install location is in your PATH
-export PATH="$HOME/.local/bin:$PATH"
-
-# Verify RSeQC is accessible
-bam_stat.py --version
-tin.py --version
-infer_experiment.py --version
-```
-
-Add the `export PATH` line to your `~/.bashrc` or cluster job submission
-script so it persists across sessions.
 
 ## Quick Start
 
@@ -113,7 +111,7 @@ script so it persists across sessions.
 2. **Run the pipeline**
 
    ```bash
-   nextflow run workflows/main.nf -params-file params.yaml
+   nextflow run workflows/main.nf -params-file params.yaml -profile slurm
    ```
 
 ## Usage
@@ -127,6 +125,9 @@ nextflow run workflows/main.nf -params-file params.yaml
 ### With Profile
 
 ```bash
+# On SLURM cluster (recommended for HPC)
+nextflow run workflows/main.nf -params-file params.yaml -profile slurm
+
 # Using conda environment
 nextflow run workflows/main.nf -params-file params.yaml -profile conda
 
@@ -135,9 +136,6 @@ nextflow run workflows/main.nf -params-file params.yaml -profile docker
 
 # Using Singularity containers
 nextflow run workflows/main.nf -params-file params.yaml -profile singularity
-
-# On SLURM cluster
-nextflow run workflows/main.nf -params-file params.yaml -profile slurm
 ```
 
 ### Resume Failed Run
@@ -166,6 +164,39 @@ nextflow run workflows/main.nf -params-file params.yaml -resume
 | `max_memory` | `64.GB` | Maximum memory |
 | `max_time` | `48.h` | Maximum time per process |
 | `skip_rseqc` | `false` | Skip RSeQC quality control steps |
+| `run_featurecounts` | `false` | Run featureCounts quantification |
+| `run_htseq` | `false` | Run HTSeq-count quantification |
+| `strandedness` | `0` | Library strandedness: 0=unstranded, 1=stranded, 2=reverse |
+
+## Quantification Methods
+
+The pipeline supports three quantification methods:
+
+### StringTie (default, always runs)
+- Transcript-level and gene-level quantification
+- Outputs: `counts/gene_count_matrix.csv`, `counts/transcript_count_matrix.csv`
+- Best for: Novel transcript discovery, isoform-level analysis
+
+### featureCounts (optional)
+- Fast gene-level counting using Subread
+- Enable with: `run_featurecounts: true`
+- Outputs: `featurecounts/featurecounts.txt`
+- Best for: Simple gene-level DE analysis, large datasets
+
+### HTSeq (optional)
+- Gene-level counting, widely used in published studies
+- Enable with: `run_htseq: true`
+- Outputs: `htseq/htseq_counts.txt`
+- Best for: Reproducibility with older pipelines, publication standards
+
+### Strandedness Setting
+
+Set `strandedness` in params.yaml based on your library prep:
+- `0` = Unstranded (e.g., standard Illumina)
+- `1` = Stranded/sense (e.g., Ligation method)
+- `2` = Reversely stranded (e.g., dUTP, Illumina TruSeq Stranded)
+
+Use `infer_experiment.py` results from RSeQC to determine your library's strandedness.
 
 ## Output Structure
 
@@ -180,9 +211,14 @@ results/
 │   ├── merged/           # Merged annotation
 │   └── quantification/   # Quantified transcripts
 ├── ballgown/             # Ballgown table files
-├── counts/               # Count matrices for DE analysis
+├── counts/               # StringTie count matrices
 │   ├── gene_count_matrix.csv
 │   └── transcript_count_matrix.csv
+├── featurecounts/        # featureCounts output (if enabled)
+│   ├── featurecounts.txt
+│   └── featurecounts.txt.summary
+├── htseq/                # HTSeq output (if enabled)
+│   └── htseq_counts.txt
 ├── rseqc/                # RSeQC quality control outputs
 │   ├── bam_stat/         # Basic alignment statistics
 │   ├── infer_experiment/ # Strandedness inference
@@ -203,17 +239,18 @@ results/
 ```
 bulk-rnaseq-nf/
 ├── workflows/
-│   └── main.nf           # Main pipeline workflow
+│   └── main.nf               # Main pipeline workflow
 ├── modules/
-│   ├── preprocess/       # Concatenation and trimming
-│   ├── align/            # HISAT2 indexing and alignment
+│   ├── preprocess/           # Concatenation and trimming
+│   ├── align/                # HISAT2 indexing and alignment
 │   ├── transcript_assembly/  # StringTie assembly and quantification
-│   └── qc/               # MultiQC reporting
-├── nextflow.config       # Pipeline configuration
-├── params.yaml           # Parameter template
-├── environment.yml       # Conda environment
-├── CITATIONS.md          # Tool citations
-└── README.md             # This file
+│   ├── quantification/       # featureCounts and HTSeq
+│   └── qc/                   # RSeQC and MultiQC reporting
+├── nextflow.config           # Pipeline configuration
+├── params.yaml               # Parameter template
+├── environment.yml           # Conda environment
+├── CITATIONS.md              # Tool citations
+└── README.md                 # This file
 ```
 
 ## RSeQC: Interpreting Results for PCA Outliers
@@ -271,6 +308,10 @@ metrics into interactive plots for side-by-side comparison.
 **HISAT2 alignment fails**
 - Ensure HISAT2 index was built with the same version
 - Check that index files are not corrupted
+
+**Module not found on cluster**
+- Check available modules with `module avail`
+- Update module names in `nextflow.config` under the slurm profile
 
 ### Getting Help
 

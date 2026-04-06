@@ -25,6 +25,10 @@ dependencies:
   # Transcript assembly and quantification
   - stringtie>=2.2.1
 
+  # Read counting (optional quantification methods)
+  - subread>=2.0.6
+  - htseq>=2.0.5
+
   # RSeQC quality control
   - rseqc>=5.0.1
 
