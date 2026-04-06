@@ -25,12 +25,12 @@ dependencies:
   # Transcript assembly and quantification
   - stringtie>=2.2.1
 
-  # Quality control - RSeQC
+  # RSeQC quality control
   - rseqc>=5.0.1
 
-  # Python dependencies for prepDE.py and helper scripts
-  - pandas>=1.3.0
-  - numpy>=1.21.0
+  # UCSC utilities for GTF-to-BED12 conversion (required by RSeQC)
+  - ucsc-gtftogenepred
+  - ucsc-genepredtobed
 
   # Utility tools
   - pigz>=2.6

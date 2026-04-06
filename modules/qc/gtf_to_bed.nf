@@ -3,8 +3,8 @@
  *
  * Convert GTF annotation file to BED12 format.
  * RSeQC tools require a BED12 gene model file. This process converts
- * the GTF annotation automatically so users don't need to provide
- * a separate BED file.
+ * the GTF annotation using the standard UCSC utilities:
+ *   gtfToGenePred -> genePredToBed
  *
  * Input:
  *   - gtf: GTF annotation file
@@ -12,7 +12,8 @@
  * Output:
  *   - bed: BED12 gene model file for RSeQC
  *
- * Tools: gtf_to_bed12.py (bundled in bin/)
+ * Tools: UCSC gtfToGenePred and genePredToBed
+ *        (conda install -c bioconda ucsc-gtftogenepred ucsc-genepredtobed)
  */
 
 process GTF_TO_BED {
@@ -29,6 +30,7 @@ process GTF_TO_BED {
 
     script:
     """
-    gtf_to_bed12.py -i ${gtf} -o gene_model.bed
+    gtfToGenePred ${gtf} gene_model.genePred
+    genePredToBed gene_model.genePred gene_model.bed
     """
 }

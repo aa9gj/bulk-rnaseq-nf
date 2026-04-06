@@ -44,6 +44,8 @@ Or ensure the following tools are in your PATH:
 - samtools >= 1.15
 - stringtie >= 2.2.1
 - rseqc >= 5.0.1
+- ucsc-gtftogenepred (for GTF-to-BED conversion)
+- ucsc-genepredtobed (for GTF-to-BED conversion)
 - multiqc >= 1.12
 - python >= 3.8
 
@@ -207,8 +209,6 @@ bulk-rnaseq-nf/
 │   ├── align/            # HISAT2 indexing and alignment
 │   ├── transcript_assembly/  # StringTie assembly and quantification
 │   └── qc/               # MultiQC reporting
-├── bin/
-│   └── prepDE.py         # Count matrix generation script
 ├── nextflow.config       # Pipeline configuration
 ├── params.yaml           # Parameter template
 ├── environment.yml       # Conda environment
