@@ -13,11 +13,12 @@ A Nextflow pipeline for bulk RNA sequencing analysis.
 3. **Index generation** - Build [HISAT2](https://ccb.jhu.edu/software/hisat2/) index (optional, if not pre-built)
 4. **Alignment** - Map reads to reference genome with [HISAT2](https://ccb.jhu.edu/software/hisat2/)
 5. **BAM processing** - Sort and index alignments with [SAMtools](http://www.htslib.org/)
-6. **Transcript assembly** - Assemble transcripts with [StringTie](https://ccb.jhu.edu/software/stringtie/) (first pass)
-7. **Merge assemblies** - Create unified transcript annotation across samples
-8. **Quantification** - Estimate abundances with [StringTie](https://ccb.jhu.edu/software/stringtie/) (second pass)
-9. **Count matrices** - Generate gene/transcript counts with prepDE.py
-10. **QC report** - Aggregate QC metrics with [MultiQC](https://multiqc.info/)
+6. **RSeQC quality control** - Comprehensive alignment QC with [RSeQC](https://rseqc.sourceforge.net/)
+7. **Transcript assembly** - Assemble transcripts with [StringTie](https://ccb.jhu.edu/software/stringtie/) (first pass)
+8. **Merge assemblies** - Create unified transcript annotation across samples
+9. **Quantification** - Estimate abundances with [StringTie](https://ccb.jhu.edu/software/stringtie/) (second pass)
+10. **Count matrices** - Generate gene/transcript counts with prepDE.py
+11. **QC report** - Aggregate QC metrics with [MultiQC](https://multiqc.info/)
 
 ## Requirements
 
@@ -42,10 +43,15 @@ Or ensure the following tools are in your PATH:
 - hisat2 >= 2.2.1
 - samtools >= 1.15
 - stringtie >= 2.2.1
+- rseqc >= 5.0.1
+- ucsc-gtftogenepred (for GTF-to-BED conversion)
+- ucsc-genepredtobed (for GTF-to-BED conversion)
 - multiqc >= 1.12
 - python >= 3.8
 
 ## Installation
+
+### Option 1: Conda (recommended)
 
 ```bash
 # Clone the repository
@@ -59,6 +65,30 @@ conda activate bulk-rnaseq
 # Verify installation
 nextflow run workflows/main.nf --help
 ```
+
+### Option 2: Local pip install (when tools aren't on the cluster)
+
+If RSeQC or other Python tools are not installed on your cluster, you can
+install them into your local user directory:
+
+```bash
+# Install RSeQC locally (no admin privileges required)
+pip install --user rseqc
+
+# Or install into a specific directory
+pip install --target=$HOME/local/lib/python rseqc
+
+# Make sure the install location is in your PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Verify RSeQC is accessible
+bam_stat.py --version
+tin.py --version
+infer_experiment.py --version
+```
+
+Add the `export PATH` line to your `~/.bashrc` or cluster job submission
+script so it persists across sessions.
 
 ## Quick Start
 
@@ -135,6 +165,7 @@ nextflow run workflows/main.nf -params-file params.yaml -resume
 | `max_cpus` | `16` | Maximum CPUs |
 | `max_memory` | `64.GB` | Maximum memory |
 | `max_time` | `48.h` | Maximum time per process |
+| `skip_rseqc` | `false` | Skip RSeQC quality control steps |
 
 ## Output Structure
 
@@ -152,6 +183,13 @@ results/
 ├── counts/               # Count matrices for DE analysis
 │   ├── gene_count_matrix.csv
 │   └── transcript_count_matrix.csv
+├── rseqc/                # RSeQC quality control outputs
+│   ├── bam_stat/         # Basic alignment statistics
+│   ├── infer_experiment/ # Strandedness inference
+│   ├── read_distribution/# Read distribution across features
+│   ├── inner_distance/   # Insert size distribution
+│   ├── gene_body_coverage/# 3'/5' coverage bias
+│   └── tin/              # Transcript Integrity Numbers
 ├── multiqc/              # MultiQC report
 └── pipeline_info/        # Execution reports
     ├── timeline.html
@@ -171,14 +209,52 @@ bulk-rnaseq-nf/
 │   ├── align/            # HISAT2 indexing and alignment
 │   ├── transcript_assembly/  # StringTie assembly and quantification
 │   └── qc/               # MultiQC reporting
-├── bin/
-│   └── prepDE.py         # Count matrix generation script
 ├── nextflow.config       # Pipeline configuration
 ├── params.yaml           # Parameter template
 ├── environment.yml       # Conda environment
 ├── CITATIONS.md          # Tool citations
 └── README.md             # This file
 ```
+
+## RSeQC: Interpreting Results for PCA Outliers
+
+The RSeQC modules are specifically included to help diagnose why samples may
+appear as outliers in PCA plots. Here's what to check:
+
+### 1. Transcript Integrity Number (TIN) - Most Important
+
+Check `results/rseqc/tin/` for per-sample TIN scores.
+
+| Median TIN | Quality | Action |
+|------------|---------|--------|
+| > 70 | High quality | No concern |
+| 50-70 | Moderate degradation | Consider as covariate in DE analysis |
+| < 50 | Severe degradation | Strong outlier candidate - consider removing |
+
+### 2. Strandedness (infer_experiment)
+
+Check `results/rseqc/infer_experiment/` to verify all samples have the
+same library strandedness. If one sample shows different strandedness
+proportions, it was likely prepared with a different protocol and will
+appear as an outlier.
+
+### 3. Gene Body Coverage
+
+Check `results/rseqc/gene_body_coverage/` for coverage uniformity.
+Samples with strong 3' bias have degraded RNA and will cluster
+separately in PCA.
+
+### 4. Read Distribution
+
+Check `results/rseqc/read_distribution/` for the proportion of reads
+mapping to exons, introns, and intergenic regions. Samples with
+unusually high intronic/intergenic fractions may have DNA contamination.
+
+### 5. MultiQC Report
+
+The easiest way to compare all samples is the MultiQC report at
+`results/multiqc/multiqc_report.html`, which aggregates all RSeQC
+metrics into interactive plots for side-by-side comparison.
 
 ## Troubleshooting
 

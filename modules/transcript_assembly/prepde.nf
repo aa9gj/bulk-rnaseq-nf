@@ -12,8 +12,7 @@
  *   - gene_counts: Gene-level count matrix (CSV)
  *   - transcript_counts: Transcript-level count matrix (CSV)
  *
- * Note: prepDE.py is provided by the StringTie authors and expects
- *       a specific directory structure or sample list file.
+ * Note: Uses the real prepDE.py that ships with the StringTie package.
  *
  * Tools: prepDE.py (bundled with StringTie)
  */
