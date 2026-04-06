@@ -51,6 +51,14 @@ gtf_annotation: "reference/annotation.gtf"
 outdir: "results"
 
 # -----------------------------------------------------------------------------
+# RSEQC SETTINGS
+# -----------------------------------------------------------------------------
+# RSeQC provides quality control metrics to help diagnose PCA outliers.
+# Set skip_rseqc to true to disable all RSeQC modules.
+
+skip_rseqc: false
+
+# -----------------------------------------------------------------------------
 # RESOURCE SETTINGS (optional - defaults in nextflow.config)
 # -----------------------------------------------------------------------------
 # Uncomment and modify these to override default resource limits
