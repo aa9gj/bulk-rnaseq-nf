@@ -30,6 +30,14 @@
 
 - [Trim Galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
 
+- [featureCounts/Subread](https://pubmed.ncbi.nlm.nih.gov/24227677/)
+
+  > Liao Y, Smyth GK, Shi W. featureCounts: an efficient general purpose program for assigning sequence reads to genomic features. Bioinformatics. 2014 Apr 1;30(7):923-30. doi: 10.1093/bioinformatics/btt656. Epub 2013 Nov 13. PubMed PMID: 24227677.
+
+- [HTSeq](https://pubmed.ncbi.nlm.nih.gov/25260700/)
+
+  > Anders S, Pyl PT, Huber W. HTSeq--a Python framework to work with high-throughput sequencing data. Bioinformatics. 2015 Jan 15;31(2):166-9. doi: 10.1093/bioinformatics/btu638. Epub 2014 Sep 25. PubMed PMID: 25260700; PubMed Central PMCID: PMC4287950.
+
 ## R packages
 
 - [R](https://www.R-project.org/)
