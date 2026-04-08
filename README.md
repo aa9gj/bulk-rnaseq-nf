@@ -61,23 +61,60 @@ Or ensure the following tools are in your PATH:
 
 ## Installation
 
-### Option 1: HPC Cluster with Module System
+### Option 1: Docker (Recommended)
+
+The easiest way to run the pipeline with all dependencies pre-installed. Requires [Docker](https://docs.docker.com/get-docker/) and [Nextflow](https://www.nextflow.io/).
+
+```bash
+# Clone the repository
+git clone https://github.com/aa9gj/bulk-rnaseq-nf.git
+cd bulk-rnaseq-nf
+
+# Run with the Docker profile (image is pulled automatically)
+nextflow run workflows/main.nf -params-file params.yaml -profile docker
+```
+
+The Docker image is hosted on GitHub Container Registry and will be pulled automatically on the first run. To pull it manually:
+
+```bash
+docker pull ghcr.io/aa9gj/bulk-rnaseq-nf:latest
+```
+
+To build the image locally instead:
+
+```bash
+docker build -t bulk-rnaseq-nf .
+```
+
+### Option 2: Singularity
+
+For HPC environments where Docker is not available, use Singularity (which can pull Docker images):
+
+```bash
+git clone https://github.com/aa9gj/bulk-rnaseq-nf.git
+cd bulk-rnaseq-nf
+
+# Run with Singularity profile (image is pulled automatically)
+nextflow run workflows/main.nf -params-file params.yaml -profile singularity
+```
+
+### Option 3: HPC Cluster with Module System
 
 If your cluster has the required software installed as modules, simply use the SLURM profile:
 
 ```bash
-git clone https://github.com/yourusername/bulk-rnaseq-nf.git
+git clone https://github.com/aa9gj/bulk-rnaseq-nf.git
 cd bulk-rnaseq-nf
 
 # Run with SLURM profile (modules loaded automatically)
 nextflow run workflows/main.nf -params-file params.yaml -profile slurm
 ```
 
-### Option 2: Conda
+### Option 4: Conda
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/bulk-rnaseq-nf.git
+git clone https://github.com/aa9gj/bulk-rnaseq-nf.git
 cd bulk-rnaseq-nf
 
 # Install dependencies with conda
