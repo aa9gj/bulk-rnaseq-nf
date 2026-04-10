@@ -38,6 +38,7 @@ process STRINGTIE_FIRST {
     # Run StringTie first-pass assembly
     stringtie \\
         -e \\
+        --rf \\
 	${bam} \\
         -G ${gtf_annotation} \\
         -o ${sample_id}.gtf \\

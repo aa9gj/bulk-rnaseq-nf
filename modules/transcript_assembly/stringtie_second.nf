@@ -40,6 +40,7 @@ process STRINGTIE_SECOND {
     # -e: Only estimate abundance of transcripts in the reference
     # -B: Generate Ballgown table files for downstream analysis
     stringtie \\
+        --rf \\
         ${bam} \\
         -G ${merged_gtf} \\
         -o ${sample_id}_quant.gtf \\

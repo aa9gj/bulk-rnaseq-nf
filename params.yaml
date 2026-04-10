@@ -102,7 +102,7 @@ run_htseq: false            # Set to true to run HTSeq-count
 #   0 = unstranded
 #   1 = stranded (sense)
 #   2 = reversely stranded (antisense, e.g. dUTP/Illumina TruSeq)
-strandedness: 0
+strandedness: 2
 
 # -----------------------------------------------------------------------------
 # RESOURCE SETTINGS

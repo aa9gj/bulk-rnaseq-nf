@@ -41,6 +41,7 @@ process HISAT2_ALIGN {
     hisat2 \\
         -p ${threads} \\
         --dta \\
+        --rna-strandness RF \\
         --summary-file ${sample_id}.hisat2.log \\
         -x ${index_prefix} \\
         -1 ${R1} \\
